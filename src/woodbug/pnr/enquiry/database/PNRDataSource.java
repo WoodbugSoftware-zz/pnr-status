@@ -1,4 +1,4 @@
-package woodbug.pnr.enquiry;
+package woodbug.pnr.enquiry.database;
 
 import java.util.ArrayList;
 import java.util.List;

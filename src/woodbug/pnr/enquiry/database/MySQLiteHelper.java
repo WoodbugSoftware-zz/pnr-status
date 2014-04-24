@@ -1,4 +1,4 @@
-package woodbug.pnr.enquiry;
+package woodbug.pnr.enquiry.database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

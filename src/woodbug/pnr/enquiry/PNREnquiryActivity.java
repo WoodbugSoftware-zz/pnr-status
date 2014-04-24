@@ -8,6 +8,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
+import woodbug.pnr.enquiry.database.PNRDataSource;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
@@ -23,7 +24,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.ImageButton;
+import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
@@ -35,7 +36,7 @@ public class PNREnquiryActivity extends Activity implements OnClickListener {
 	String result;
 	AutoCompleteTextView pnr;
 	AlertDialog alert;
-	ImageButton ib;
+	Button checkStatus;
 	RadioButton rb;
 	List<String> pnrNumbers;
 	private PNRDataSource datasource;
@@ -111,8 +112,8 @@ public class PNREnquiryActivity extends Activity implements OnClickListener {
 		setContentView(R.layout.main);
 		rb = (RadioButton) findViewById(R.id.sms);
 		pnr = (AutoCompleteTextView) findViewById(R.id.pnr);
-		ib = (ImageButton) findViewById(R.id.imageButton1);
-		ib.setOnClickListener(this);
+		checkStatus = (Button) findViewById(R.id.checkStatus);
+		checkStatus.setOnClickListener(this);
         context=getApplicationContext();
         AppRater.app_launched(this);
 	}
