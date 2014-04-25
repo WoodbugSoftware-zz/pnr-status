@@ -7,33 +7,33 @@ import android.util.Log;
 
 public class MySQLiteHelper extends SQLiteOpenHelper {
 
-	public static final String TABLE_PNR = "pnrs";
-	public static final String COLUMN_ID = "_id";
+  public static final String TABLE_PNR = "pnrs";
+  public static final String COLUMN_ID = "_id";
 
-	private static final String DATABASE_NAME = "pnr.db";
-	private static final int DATABASE_VERSION = 1;
+  private static final String DATABASE_NAME = "pnr.db";
+  private static final int DATABASE_VERSION = 1;
 
-	// Database creation sql statement
-	private static final String DATABASE_CREATE = "create table "
-			+ TABLE_PNR + "(" + COLUMN_ID
-			+ " integer primary key);";
+  // Database creation sql statement
+  private static final String DATABASE_CREATE = "create table "
+    + TABLE_PNR + "(" + COLUMN_ID
+    + " integer primary key);";
 
-	public MySQLiteHelper(Context context) {
-		super(context, DATABASE_NAME, null, DATABASE_VERSION);
-	}
+  public MySQLiteHelper(Context context) {
+    super(context, DATABASE_NAME, null, DATABASE_VERSION);
+  }
 
-	@Override
-	public void onCreate(SQLiteDatabase database) {
-		database.execSQL(DATABASE_CREATE);
-	}
+  @Override
+  public void onCreate(SQLiteDatabase database) {
+    database.execSQL(DATABASE_CREATE);
+  }
 
-	@Override
-	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		Log.w(MySQLiteHelper.class.getName(),
-				"Upgrading database from version " + oldVersion + " to "
-						+ newVersion + ", which will destroy all old data");
-		db.execSQL("DROP TABLE IF EXISTS " + TABLE_PNR);
-		onCreate(db);
-	}
+  @Override
+  public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+    Log.w(MySQLiteHelper.class.getName(),
+      "Upgrading database from version " + oldVersion + " to "
+      + newVersion + ", which will destroy all old data");
+    db.execSQL("DROP TABLE IF EXISTS " + TABLE_PNR);
+    onCreate(db);
+  }
 
 } 
