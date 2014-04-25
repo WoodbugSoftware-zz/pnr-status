@@ -21,7 +21,7 @@ public class Result {
     stationAlight,
     stationFromTime,
     stationToTime,
-    StationBoardTime,
+    stationBoardTime,
     stationAlightTime;
 
   private ArrayList<Passenger> passengerList = new ArrayList<Passenger>();
@@ -100,7 +100,7 @@ public class Result {
   }
 
   public void setStationBoardTime(String stationBoardTime) {
-    StationBoardTime = stationBoardTime;
+    this.stationBoardTime = stationBoardTime;
   }
 
   public void setStationAlightTime(String stationAlightTime) {
@@ -117,33 +117,50 @@ public class Result {
       result.append("Chart is not Prepared\n");
     }
     
-    result.append("\nTrain Name: " + trainName + "\n");
-    result.append("Train Number: " + trainNumber + "\n");
-    result.append("Class: " + trainClass + "\n");
-    result.append("Date: " + date + "\n");
+    appendHelper(result, "Train Name", trainName);
+    appendHelper(result, "Train Number", trainNumber);
+    appendHelper(result, "Class", trainClass);
+    appendHelper(result, "Date", date);
+    result.append("\n");
    
     int counter = 1;
     for(Passenger passenger: passengerList) {
-      result.append("\n Passenger: " + counter);
+      appendHelper(result, "Passenger", String.valueOf(counter));
       result.append(passenger.toString());
       counter++;
     }
     
-    result.append("\nFrom: " + stationFrom);
-    if(chartPrepared) result.append("TIME: " + stationFromTime + "\n");
+    appendHelper(result, "From", stationFrom);
+    if(chartPrepared) {
+      appendHelper(result, "Time", stationFromTime);
+      result.append("\n");
+    }
     
-    result.append("\nTo: " + stationTo);
-    if(chartPrepared) result.append("TIME: " + stationToTime + "\n");
+    appendHelper(result, "To", stationTo);
+    if(chartPrepared) {
+      appendHelper(result, "Time", stationToTime);
+      result.append("\n");
+    }
     
-    result.append("\nBoard: " + StationBoard);
-    if(chartPrepared) result.append("TIME: " + StationBoardTime + "\n");
+    appendHelper(result, "Board", StationBoard);
+    if(chartPrepared) {
+      appendHelper(result, "Time", stationBoardTime);
+      result.append("\n");
+    }
     
-    result.append("\nAlight: " + stationAlight);
-    if(chartPrepared) result.append("TIME: " + stationAlightTime + "\n");
+    appendHelper(result, "Alight", stationAlight);
+    if(chartPrepared) {
+      appendHelper(result, "Time", stationAlightTime);
+      result.append("\n");
+    }
   
     result.append(warningMessage);
     
     return result.toString();
+  }
+  
+  private static void appendHelper(StringBuilder sb, String tag, String val) {
+    if(val != null) sb.append("\n" + tag + ": " + val);
   }
   
 }
