@@ -1,7 +1,5 @@
 package woodbug.pnr.enquiry;
 
-import java.util.Locale;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -14,9 +12,8 @@ import android.widget.Toast;
 public class ShowStatus extends Activity {
 
   JSONObject resultJson, data, temp;
-  String fields[] = {"from", "to", "alight", "board"};
-  TextView result;
-  StringBuffer status;
+  TextView resultView;
+  Result result = new Result();
   
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -24,13 +21,12 @@ public class ShowStatus extends Activity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.status);
 
-    status = new StringBuffer();
-    result = (TextView) findViewById(R.id.result);
+    resultView = (TextView) findViewById(R.id.result);
     Intent i = getIntent();
     
     try {
       if(i.getStringExtra("mode").equals("sms")) {
-        result.setText(i.getStringExtra("result"));
+        resultView.setText(i.getStringExtra("result"));
             
       } else {
         resultJson = new JSONObject(i.getStringExtra("result"));
@@ -39,57 +35,49 @@ public class ShowStatus extends Activity {
         // for wrong PNR or other errors
         if (!(stat.equals("OK")||stat.equals("OK")))
           throw new Exception();
-    
+
         // go into the data part
         data = resultJson.getJSONObject("data");
-        boolean chartPrepared = data.getBoolean("chart_prepared");
-      
-        if(chartPrepared) {
-          status.append("Chart is Prepared");
-        } else {
-          status.append("Chart is not Prepared");
-        }
-        status.append("\n");
-      
-        JSONArray passenger = data.getJSONArray("passenger");
-        int j = 0;
-      
-        while (j < passenger.length()){
-          temp = passenger.getJSONObject(j);
-          status.append("\n Passenger: " + (j+1));
-          status.append("\n Seat Number: " + temp.getString("seat_number") + "\n");
-          status.append("Status: " + temp.getString("status") + "\n");
-          j++;
-        }
 
-        //status.append("\n\nPNR Number: " + data.getString("pnr_number") + "\n");
-        status.append("\n\nTrain Name: " + data.getString("train_name") + "\n");
-        status.append("Train Number: " + data.getString("train_number") + "\n");
-        status.append("Class: " + data.getString("class") + "\n");
+        result.setChartPrepared(data.getBoolean("chart_prepared"));
+
         temp = data.getJSONObject("travel_date");
-        status.append("Date: " + temp.getString("date") + "\n\n");
-    
-        j = 0;
-        while(j < fields.length){
-          temp = data.getJSONObject(fields[j]);
-          status.append("\n" + fields[j].toUpperCase(Locale.getDefault())
-            + ": " + temp.getString("name"));
-          //status.append("Station CODE: " + temp.getString("code") + "\n");
-          //status.append("Station NAME: " + temp.getString("name") + "\n");
-          if(chartPrepared) {
-            status.append("TIME: " + temp.getString("time") + "\n");
-          }
-          j++;
+        result.setTrainName(data.getString("train_name"));
+        result.setTrainNumber(data.getString("train_number"));
+        result.setTrainClass(data.getString("class"));
+        result.setDate(temp.getString("date"));
+
+        JSONArray passenger = data.getJSONArray("passenger");
+        int iterate = 0;
+        while (iterate < passenger.length()){
+          temp = passenger.getJSONObject(iterate);
+          result.addPassenger(temp.getString("seat_number"), 
+            temp.getString("status"));
+          iterate++;
         }
-      
-        status.append("\n\n Please Note that in case the Final Charts have not"
-                      + "been prepared, the Current Status might upgrade/downgr"
-                      + "ade at a later stage.");
-      
-        result.setText(status);
+        
+        //{"from", "to", "alight", "board"};
+        temp = data.getJSONObject("from");
+        result.setStationFrom(temp.getString("name"));
+        result.setStationFromTime(temp.getString("time"));
+        
+        temp = data.getJSONObject("to");
+        result.setStationTo(temp.getString("name"));
+        result.setStationToTime(temp.getString("time"));
+        
+        temp = data.getJSONObject("board");
+        result.setStationBoard(temp.getString("name"));
+        result.setStationBoardTime(temp.getString("time"));
+        
+        temp = data.getJSONObject("alight");
+        result.setStationAlight(temp.getString("name"));
+        result.setStationAlightTime(temp.getString("time"));
+
+        resultView.setText(result.toString());
       }
       
     } catch (Exception ignore) {
+      ignore.printStackTrace();
       Toast.makeText(getApplicationContext(),
         "Invalid Result. check PNR number..", Toast.LENGTH_LONG).show();
     }
