@@ -37,9 +37,9 @@ public class SMS {
   public void sendSms() {
     try {
       SmsManager smsManager = SmsManager.getDefault();
-      EventReceiver smsObser = new EventReceiver();
       PNREnquiryApplication.context.getContentResolver()
-      .registerContentObserver(EventReceiver.smsUri, true, smsObser);
+        .registerContentObserver(EventReceiver.smsUri, true,
+          PNREnquiryApplication.smsObser);
     	      
       Intent intent = new Intent(EventReceiver.ACTION_SMS_SENT, null,
           PNREnquiryApplication.context, EventReceiver.class);

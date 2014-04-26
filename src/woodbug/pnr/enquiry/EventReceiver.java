@@ -1,5 +1,6 @@
 package woodbug.pnr.enquiry;
 
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.ContentObserver;
 import android.database.Cursor;
@@ -32,24 +33,27 @@ public class EventReceiver extends ContentObserver {
   
   public void getResultFromSms() {
     
-	String columns[] = new String[] { "_id",
+    String columns[] = new String[] { "thread_id",
                                       "address",
                                       "body",
                                       "type" };
       
+    ContentResolver contentResolver = PNREnquiryApplication.context
+      .getContentResolver();
     //last record first
-    Cursor c = PNREnquiryApplication.context.getContentResolver()
-      .query(smsUri, columns, null, null, "_id DESC");
+    Cursor c = contentResolver.query(smsUri, columns, null, null, "_id DESC");
 
-    int indexAddress  = c.getColumnIndex("address"),
+    int indexThreadId = c.getColumnIndex("thread_id"),
+        indexAddress  = c.getColumnIndex("address"),
         indexBody     = c.getColumnIndex("body"),
         indexType     = c.getColumnIndex("type");
    
     if (c.moveToFirst()) {
 
-      String number  = c.getString(indexAddress),
-             body    = c.getString(indexBody);
-      int    type    = c.getInt(indexType);
+      String number   = c.getString(indexAddress),
+             body     = c.getString(indexBody);
+      int    type     = c.getInt(indexType),
+             threadId = c.getInt(indexThreadId);
 
       if(type == 1 && number.equals("5676747")) {
         Intent in = new Intent(PNREnquiryApplication.context, ShowStatus.class);
@@ -57,6 +61,13 @@ public class EventReceiver extends ContentObserver {
         in.putExtra("mode", "sms");
         in.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         PNREnquiryApplication.context.startActivity(in);
+        
+        // Deleting the sms thread.
+        contentResolver.delete(smsUri, "thread_id=?",
+          new String[]{String.valueOf(threadId)});
+        
+        contentResolver.unregisterContentObserver
+          (PNREnquiryApplication.smsObser);
       }
     }
     c.close();    

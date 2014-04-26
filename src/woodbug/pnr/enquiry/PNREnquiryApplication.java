@@ -10,6 +10,7 @@ public class PNREnquiryApplication extends Application {
   public static boolean initDone = false;
   public static PNRDataSource dataSource;
   public static PNREnquiryActivity activity;
+  public static EventReceiver smsObser;
   
   public static void init(Context ctx, PNREnquiryActivity act) {
 	  
@@ -23,6 +24,8 @@ public class PNREnquiryApplication extends Application {
     // opening the database instance
     dataSource = new PNRDataSource();
     dataSource.open();
+    
+    smsObser = new EventReceiver();
     
   }
   

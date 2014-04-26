@@ -40,7 +40,7 @@ public class ShowStatus extends Activity {
           resultView.setText(result.toString());
           
         } else {
-          resultView.setText("Unable to reach railway server, Please try"
+          resultView.setText("Unable to reach Indian Railway, Please try"
         		             + " after some time or use SMS mode.");
         }
       }
