@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">PNR Enquiry</string>
-    <string name="error_input">Error.. Please check Input..</string>
-    <string name="enter_input">Enter 10 digit PNR number</string>
-    <string name="use_internet">Use Internet(Recommended)</string>
-    <string name="use_sms">Use SMS Service</string>
-    <string name="indian_railway">Indian Railway PNR</string>
-    <string name="fetch_status">Check PNR Status</string>
+  <string name="app_name">PNR Enquiry</string>
+  <string name="error_input">Unable to fetch status, Please check your 
+    PNR number and try again.</string>
+  <string name="enter_input">Enter 10 digit PNR number</string>
+  <string name="use_internet">Use Internet(Recommended)</string>
+  <string name="use_sms">Use SMS Service</string>
+  <string name="indian_railway">Indian Railway PNR</string>
+  <string name="fetch_status">Check PNR Status</string>
 
 </resources>

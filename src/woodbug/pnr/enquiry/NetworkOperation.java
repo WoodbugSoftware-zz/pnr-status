@@ -23,8 +23,6 @@ public class NetworkOperation extends AsyncTask<String, Void, Void>{
   protected void onPreExecute() {
     nError = false;
     path = new StringBuilder(Url);
-    Toast.makeText(PNREnquiryApplication.context,
-      "Fetching PNR status..Please wait..", Toast.LENGTH_LONG).show();
   }
   
   @Override
@@ -40,7 +38,6 @@ public class NetworkOperation extends AsyncTask<String, Void, Void>{
       intent.putExtra("status", response.getStatusLine().getStatusCode());
       intent.putExtra("result", result);
       intent.putExtra("mode", "internet");
-      //Log.i("Network", ""+response.getStatusLine().getStatusCode());
       
     } catch (Exception e) {
       nError = true;

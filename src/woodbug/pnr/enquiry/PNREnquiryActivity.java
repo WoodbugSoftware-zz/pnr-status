@@ -9,7 +9,10 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
@@ -18,7 +21,8 @@ import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
-public class PNREnquiryActivity extends Activity implements OnClickListener {
+public class PNREnquiryActivity extends Activity implements OnClickListener
+                                                            , TextWatcher {
   /** Called when the activity is first created. */
 
   AutoCompleteTextView pnrBox;
@@ -42,6 +46,7 @@ public class PNREnquiryActivity extends Activity implements OnClickListener {
     context     = getApplicationContext();
     
     checkStatus.setOnClickListener(this);
+    pnrBox.addTextChangedListener(this);
   }
 
   @Override
@@ -77,7 +82,7 @@ public class PNREnquiryActivity extends Activity implements OnClickListener {
     }
     
     progDailog = new ProgressDialog(this);
-    progDailog.setMessage("Fetching status...");
+    progDailog.setMessage("Fetching your PNR status. Please wait..");
     progDailog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
     progDailog.setCancelable(false);
     progDailog.setCanceledOnTouchOutside(false);
@@ -123,5 +128,21 @@ public class PNREnquiryActivity extends Activity implements OnClickListener {
     }
     
   }
+
+  @Override
+  public void onTextChanged(CharSequence s, int start, int before, int count) {
+    if(s.toString().length() == 10) {
+      pnrBox.setTextColor(Color.parseColor("#67A61A"));
+    } else {
+      pnrBox.setTextColor(Color.parseColor("#F56E6E"));
+    }
+  }
+
+  @Override
+  public void beforeTextChanged
+    (CharSequence s, int start, int count, int after) {}
+  
+  @Override
+  public void afterTextChanged(Editable s) {}
   
 }
