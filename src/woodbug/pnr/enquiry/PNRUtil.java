@@ -62,23 +62,46 @@ public class PNRUtil {
     Result result = new Result();
     String[] parts = resultString.split("\\n");
 
-    String
-      trainNumber     = parts[2].substring(parts[2].indexOf(":") + 1,
-                          parts[2].indexOf(":") + 6),
-      trainName       = parts[2].substring(parts[2].indexOf("-") + 1),
-      date            = parts[3].substring(parts[3].indexOf(":") + 1),
-      boardingStation = parts[4].substring(parts[4].indexOf(":") + 1),
-      reserveUpto     = parts[5].substring(parts[5].indexOf(":") + 1),
-      trainClass      = parts[6].substring(parts[6].indexOf(":") + 1),
-      status          = parts[parts.length - 1].substring
-                          (parts[parts.length - 1].indexOf(":") + 1);
-    
+    String trainNumber     = null,
+           trainName       = null,
+           date            = null,
+           boardingStation = null,
+           reserveUpto     = null,
+           trainClass      = null,
+           status          = null,
+           departure       = null;
+
     ArrayList<String> passengers = new ArrayList<String>();
     
-    for(int i = 7; i < parts.length - 1; i++) {
-      String passe = parts[7].substring
-        (parts[i].lastIndexOf(":") + 1, parts[i].length()-1);
-      passengers.add(passe);
+    for(String part: parts) {	
+      if(part.startsWith("Train")) {
+        trainNumber = part.substring(part.indexOf(":") + 1,
+                        part.indexOf(":") + 6);
+        trainName   = part.substring(part.indexOf("-") + 1);
+      
+      } else if(part.startsWith("Dt")) {
+        date = part.substring(part.indexOf(":") + 1);
+      
+      } else if(part.startsWith("BoardingStn")) {
+    	boardingStation = part.substring(part.indexOf(":") + 1);
+      
+      } else if(part.startsWith("ReservedUpTo")) {
+    	reserveUpto = part.substring(part.indexOf(":") + 1);
+      
+      } else if(part.startsWith("CLASS")) {
+        trainClass = part.substring(part.indexOf(":") + 1);
+      
+      } else if(part.startsWith("ChartStatus")) {
+        status = part.substring(part.indexOf(":") + 1);
+      
+      } else if(part.matches("P\\d.*")) {
+    	String passenger = part.substring(part.lastIndexOf(":") + 1,
+          part.length()-1);
+    	passengers.add(passenger);
+      
+      } else if(part.startsWith("Schd Dep")) {
+        departure = part.substring(part.indexOf(":") + 1);
+      }
     }
 
     boolean statusBool = !status.equals("CHART NOT PREPARED");
@@ -89,6 +112,7 @@ public class PNRUtil {
     result.setDate(date);
     result.setTrainClass(trainClass);
     result.setStationBoard(boardingStation);
+    result.setStationBoardTime(departure);
     result.setStationTo(reserveUpto);
     for(String passenger: passengers) {
       result.addPassenger(null, passenger);

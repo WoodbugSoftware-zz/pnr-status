@@ -52,7 +52,7 @@ public class NetworkOperation extends AsyncTask<String, Void, Void>{
 
     if (nError) {
       Toast.makeText(PNREnquiryApplication.context,
-        "Network Error Please check your Internet Connection.", Toast.LENGTH_LONG)
+        "Please make sure your Internet Connection is on.", Toast.LENGTH_LONG)
         .show();
       if(PNREnquiryApplication.activity.progDailog != null) {
     	  PNREnquiryApplication.activity.progDailog.dismiss();
