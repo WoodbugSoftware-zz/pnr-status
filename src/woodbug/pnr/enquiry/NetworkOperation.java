@@ -52,8 +52,11 @@ public class NetworkOperation extends AsyncTask<String, Void, Void>{
 
     if (nError) {
       Toast.makeText(PNREnquiryApplication.context,
-        "Network Error Please check your data Connection", Toast.LENGTH_LONG)
+        "Network Error Please check your Internet Connection.", Toast.LENGTH_LONG)
         .show();
+      if(PNREnquiryApplication.activity.progDailog != null) {
+    	  PNREnquiryApplication.activity.progDailog.dismiss();
+      }
     } else {
       intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
       PNREnquiryApplication.context.startActivity(intent);

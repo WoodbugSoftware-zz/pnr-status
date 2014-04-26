@@ -9,8 +9,9 @@ public class PNREnquiryApplication extends Application {
   public static Context context;
   public static boolean initDone = false;
   public static PNRDataSource dataSource;
+  public static PNREnquiryActivity activity;
   
-  public static void init(Context ctx) {
+  public static void init(Context ctx, PNREnquiryActivity act) {
 	  
     if(initDone) return;
 	  
@@ -18,6 +19,7 @@ public class PNREnquiryApplication extends Application {
       context = ctx;
     }
 
+    activity = act;
     // opening the database instance
     dataSource = new PNRDataSource();
     dataSource.open();

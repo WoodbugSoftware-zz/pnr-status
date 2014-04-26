@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -31,13 +32,13 @@ public class PNREnquiryActivity extends Activity implements OnClickListener
   RadioButton radioButton;
   List<String> pnrNumbers;
   Context context; 
-  ProgressDialog progDailog;
+  public ProgressDialog progDailog;
   
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.main);
-    PNREnquiryApplication.init(getApplicationContext());
+    PNREnquiryApplication.init(getApplicationContext(), this);
     AppRater.app_launched(this);
     
     radioButton = (RadioButton) findViewById(R.id.sms);
@@ -51,13 +52,21 @@ public class PNREnquiryActivity extends Activity implements OnClickListener
 
   @Override
   protected void onResume() {
-    pnrNumbers = PNREnquiryApplication.dataSource.getAllComments();
-
-    ArrayAdapter<String> adapter = new ArrayAdapter<String>
-      (this, android.R.layout.simple_dropdown_item_1line, pnrNumbers);
-    
-    pnrBox.setAdapter(adapter);
-    pnrBox.setThreshold(1);
+    new Handler().post(
+      new Runnable() {
+        @Override
+        public void run() {
+        	
+          pnrNumbers = PNREnquiryApplication.dataSource.getAllComments();
+          ArrayAdapter<String> adapter = new ArrayAdapter<String>
+            (PNREnquiryApplication.activity, 
+              android.R.layout.simple_dropdown_item_1line, pnrNumbers);
+          pnrBox.setAdapter(adapter);
+          pnrBox.setThreshold(1);
+          
+        }
+      }
+    ); 
     super.onResume();
   }
 
@@ -69,7 +78,7 @@ public class PNREnquiryActivity extends Activity implements OnClickListener
 
   @Override
   protected void onPause() {
-    progDailog.dismiss();
+	if(progDailog != null) progDailog.dismiss();
     super.onPause();
   }
   
