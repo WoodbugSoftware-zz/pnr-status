@@ -6,6 +6,7 @@ import woodbug.pnr.enquiry.utility.AppRater;
 import woodbug.pnr.enquiry.utility.SMS;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -26,7 +27,8 @@ public class PNREnquiryActivity extends Activity implements OnClickListener {
   RadioButton radioButton;
   List<String> pnrNumbers;
   Context context; 
-
+  ProgressDialog progDailog;
+  
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -60,6 +62,12 @@ public class PNREnquiryActivity extends Activity implements OnClickListener {
     super.onDestroy();
   };
 
+  @Override
+  protected void onPause() {
+    progDailog.dismiss();
+    super.onPause();
+  }
+  
   public void onClick(View arg0) {
   
     if (pnrBox.getText().length() != 10) {
@@ -67,7 +75,14 @@ public class PNREnquiryActivity extends Activity implements OnClickListener {
         Toast.LENGTH_LONG).show();
       return;
     }
-
+    
+    progDailog = new ProgressDialog(this);
+    progDailog.setMessage("Fetching status...");
+    progDailog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+    progDailog.setCancelable(false);
+    progDailog.setCanceledOnTouchOutside(false);
+    progDailog.show();
+    
     final String pnrNumber = pnrBox.getText().toString();    
     PNREnquiryApplication.dataSource.createComment(pnrNumber);
     
