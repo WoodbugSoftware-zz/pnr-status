@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <string name="app_name">PNREnquiry</string>
+  <string name="app_name">PNR Enquiry</string>
   <string name="error_input">Unable to fetch status, Please check your 
     PNR number and try again.</string>
   <string name="enter_input">Enter 10 digit PNR number</string>
