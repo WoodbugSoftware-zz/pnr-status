@@ -37,8 +37,10 @@ public class NetworkOperation extends AsyncTask<String, Void, Void>{
       String result         = EntityUtils.toString(response.getEntity());
       
       intent = new Intent(PNREnquiryApplication.context, ShowStatus.class);
+      intent.putExtra("status", response.getStatusLine().getStatusCode());
       intent.putExtra("result", result);
       intent.putExtra("mode", "internet");
+      //Log.i("Network", ""+response.getStatusLine().getStatusCode());
       
     } catch (Exception e) {
       nError = true;

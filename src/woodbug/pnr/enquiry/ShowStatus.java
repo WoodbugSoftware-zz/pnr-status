@@ -1,6 +1,5 @@
 package woodbug.pnr.enquiry;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.app.Activity;
@@ -11,9 +10,9 @@ import android.widget.Toast;
 
 public class ShowStatus extends Activity {
 
-  JSONObject resultJson, data, temp;
+  JSONObject resultJson;
   TextView resultView;
-  Result result = new Result();
+  Result result;
   
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -26,56 +25,28 @@ public class ShowStatus extends Activity {
     
     try {
       if(i.getStringExtra("mode").equals("sms")) {
-        resultView.setText(i.getStringExtra("result"));
-            
-      } else {
-        resultJson = new JSONObject(i.getStringExtra("result"));
-        String stat = resultJson.getString("status");
-      
-        // for wrong PNR or other errors
-        if (!(stat.equals("OK")||stat.equals("OK")))
-          throw new Exception();
-
-        // go into the data part
-        data = resultJson.getJSONObject("data");
-
-        result.setChartPrepared(data.getBoolean("chart_prepared"));
-
-        temp = data.getJSONObject("travel_date");
-        result.setTrainName(data.getString("train_name"));
-        result.setTrainNumber(data.getString("train_number"));
-        result.setTrainClass(data.getString("class"));
-        result.setDate(temp.getString("date"));
-
-        JSONArray passenger = data.getJSONArray("passenger");
-        int iterate = 0;
-        while (iterate < passenger.length()){
-          temp = passenger.getJSONObject(iterate);
-          result.addPassenger(temp.getString("seat_number"), 
-            temp.getString("status"));
-          iterate++;
-        }
-        
-        //{"from", "to", "alight", "board"};
-        temp = data.getJSONObject("from");
-        result.setStationFrom(temp.getString("name"));
-        result.setStationFromTime(temp.getString("time"));
-        
-        temp = data.getJSONObject("to");
-        result.setStationTo(temp.getString("name"));
-        result.setStationToTime(temp.getString("time"));
-        
-        temp = data.getJSONObject("board");
-        result.setStationBoard(temp.getString("name"));
-        result.setStationBoardTime(temp.getString("time"));
-        
-        temp = data.getJSONObject("alight");
-        result.setStationAlight(temp.getString("name"));
-        result.setStationAlightTime(temp.getString("time"));
-
+        String resultString = i.getStringExtra("result");
+        result = PNRUtil.parseSMSResult(resultString);
         resultView.setText(result.toString());
+                    
+      } else {
+        //Log.i("got", i.getIntExtra("status", 0)+ "");
+        if(i.getIntExtra("status", 0) == 200) {
+          resultJson = new JSONObject(i.getStringExtra("result"));
+          String stat = resultJson.getString("status");
+        
+          if (!stat.equals("OK"))
+            throw new Exception();
+        
+          result = PNRUtil.parseInternetResult(resultJson);
+          resultView.setText(result.toString());
+          
+        } else {
+          resultView.setText("Unable to reach railway server, Please try"
+        		             + " after some time or use SMS mode.");
+        }
       }
-      
+
     } catch (Exception ignore) {
       ignore.printStackTrace();
       Toast.makeText(getApplicationContext(),
