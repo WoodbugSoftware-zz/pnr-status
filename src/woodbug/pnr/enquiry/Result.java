@@ -28,7 +28,7 @@ public class Result {
   
   public String getPassengerCurrentStatus() {
     Passenger passenger = passengerList.get(0);
-    return passenger.status;
+    return passenger.getStatus();
   }
   
   private class Passenger {
@@ -44,11 +44,25 @@ public class Result {
       this.status = status;
     }
     
+    public String getStatus() {    	
+      String stat = status;
+      if(status.contains("CNF")){
+        stat = stat.replaceAll("CNF", "Confirmed");
+      
+      } else if(status.contains("CAN") || status.contains("MOD")) {
+    	stat = stat.replaceAll("(CAN|MOD)", "Cancelled");
+    	  
+      } else if(status.contains("WL")) {
+    	stat = stat.replaceAll("WL", "Waiting List");
+      } 
+      return stat;
+    }
+    
     @Override
     public String toString() {
       StringBuilder passenger = new StringBuilder();
       PNRUtil.appendHelper(passenger, "Seat Number", seatNumber);
-      PNRUtil.appendHelper(passenger, "Status", status);
+      PNRUtil.appendHelper(passenger, "Status", getStatus());
       return passenger.toString();
     }
   }

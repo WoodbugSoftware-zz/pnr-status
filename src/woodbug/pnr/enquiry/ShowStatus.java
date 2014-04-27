@@ -6,7 +6,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -41,26 +40,23 @@ public class ShowStatus extends Activity {
         result = PNRUtil.parseInternetResult(resultJson);
         
       } else {
-        //Log.e("came", "came in else");
         success = false;
         resultView.setText("Unable to reach Indian Railway, Please try"
         		             + " after some time or use SMS mode.");
       }
 
-      Log.e("success", success+"");
       if(success) {
         String status = result.getPassengerCurrentStatus();
-        Log.e("status", status);         
-        if(status.contains("CNF")){
+        if(status.contains("Confirmed")) {
           background.setBackgroundColor(Color.parseColor("#45904B"));
               
-        } else if(status.contains("RAC")){
+        } else if(status.contains("RAC")) {
           background.setBackgroundColor(Color.parseColor("#716809"));
           	  
-        } else if(status.contains("CAN") || status.contains("MOD")){
+        } else if(status.contains("Cancelled")) {
           background.setBackgroundColor(Color.parseColor("#5A5950"));
           	  
-        } else {
+        } else if(status.contains("Waiting List")){
           background.setBackgroundColor(Color.parseColor("#B64E4E"));
           	  
         }           
