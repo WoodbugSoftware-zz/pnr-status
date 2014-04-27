@@ -57,7 +57,7 @@ public class PNREnquiryActivity extends Activity implements OnClickListener
         @Override
         public void run() {
         	
-          pnrNumbers = PNREnquiryApplication.dataSource.getAllComments();
+          pnrNumbers = PNREnquiryApplication.dataSource.getAllPNRs();
           ArrayAdapter<String> adapter = new ArrayAdapter<String>
             (PNREnquiryApplication.activity, 
               android.R.layout.simple_dropdown_item_1line, pnrNumbers);
@@ -98,7 +98,7 @@ public class PNREnquiryActivity extends Activity implements OnClickListener
     progDailog.show();
     
     final String pnrNumber = pnrBox.getText().toString();    
-    PNREnquiryApplication.dataSource.createComment(pnrNumber);
+    PNREnquiryApplication.dataSource.createPNR(pnrNumber);
     
     if (radioButton.isChecked()) {
 

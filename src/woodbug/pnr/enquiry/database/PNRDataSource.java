@@ -9,16 +9,14 @@ import woodbug.pnr.enquiry.utility.WoodbugAsyncTask;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.SQLException;
-import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 public class PNRDataSource {
 
   // Database fields
   private SQLiteDatabase database;
   private MySQLiteHelper dbHelper;
-  private String[] allColumns = { MySQLiteHelper.COLUMN_ID };
+  private static long THIRTY_DAYS = ((long)30) * 24 * 60 * 60 * 1000;
 
   public PNRDataSource() {
     dbHelper = new MySQLiteHelper(PNREnquiryApplication.context);
@@ -32,58 +30,57 @@ public class PNRDataSource {
     dbHelper.close();
   }
 
-  public void createComment(String pnr) {
+  public void createPNR(String pnr) {
     final String PNR = pnr;
     WoodbugAsyncTask.runTask(
       new Callable<Object>() {
         
         @Override
         public Object call() throws Exception {
+   
+          long id;
           ContentValues values = new ContentValues();
-          values.put(MySQLiteHelper.COLUMN_ID, PNR);
-          try {
-            database.insert(MySQLiteHelper.TABLE_PNR, null, values);
-          } catch (SQLiteConstraintException e) {
-            Log.d("PNRDataSource::createComment",
-              "PNR Number already in database");
-          }
-		  return null;
-		}
+          values.put(MySQLiteHelper.PNR, PNR);
+          values.put(MySQLiteHelper.LAST_MODIFIED, System.currentTimeMillis());
+          id = database.insert(MySQLiteHelper.TABLE_PNR, null, values);
+          
+          // Modify the LAST_MODIFIED
+          if(id == -1) {
+            database.update(MySQLiteHelper.TABLE_PNR, values,
+              MySQLiteHelper.PNR + "=?", new String[]{PNR});
+          }          
+
+          deleteOldPNRs();
+          return null;
+        }
         
       }
     );
   }
 
-  public List<String> getAllComments() {
-    List<String> comments = new ArrayList<String>();
+  public List<String> getAllPNRs() {
+    List<String> pnrs = new ArrayList<String>();
 
     Cursor cursor = database.query(MySQLiteHelper.TABLE_PNR,
-        allColumns, null, null, null, null, null);
+      new String[]{MySQLiteHelper.PNR}, null, null, null, null, null);
 
     cursor.moveToFirst();
     while (!cursor.isAfterLast()) {
-      String comment = cursor.getString(0);
-      comments.add(comment);
+      String pnr = cursor.getString(cursor
+        .getColumnIndex(MySQLiteHelper.PNR));
+      pnrs.add(pnr);
       cursor.moveToNext();
     }
     // Make sure to close the cursor
     cursor.close();
-    return comments;
-  }
-
-/*
-  public void deleteComment(Comment comment) {    long id = comment.getId();
-    System.out.println("Comment deleted with id: " + id);
-    database.delete(MySQLiteHelper.TABLE_COMMENTS, MySQLiteHelper.COLUMN_ID
-        + " = " + id, null);
-  }
-
-  private Comment cursorToComment(Cursor cursor) {
-    Comment comment = new Comment();
-    comment.setId(cursor.getLong(0));
-    comment.setComment(cursor.getString(1));
-    return comment;
+    return pnrs;
   }
   
-  */
+  
+  private void deleteOldPNRs() {
+    long thirtyDaysBack = System.currentTimeMillis() - THIRTY_DAYS;
+    database.delete(MySQLiteHelper.TABLE_PNR, MySQLiteHelper.LAST_MODIFIED 
+      + "<?", new String[]{String.valueOf(thirtyDaysBack)});
+  }
+
 } 
