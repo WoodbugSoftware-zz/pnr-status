@@ -1,5 +1,6 @@
 package woodbug.pnr.enquiry;
 
+import java.util.Calendar;
 import java.util.List;
 
 import woodbug.pnr.enquiry.utility.AppRater;
@@ -83,13 +84,22 @@ public class PNREnquiryActivity extends Activity implements OnClickListener
   }
   
   public void onClick(View arg0) {
-  
+
+    Calendar rightNow = Calendar.getInstance();
+    int hour = rightNow.get(Calendar.HOUR_OF_DAY);
+    int minutes = rightNow.get(Calendar.MINUTE);
+	    
     if (pnrBox.getText().length() != 10) {
       Toast.makeText(context, "PNR number must be 10 digits long..",
         Toast.LENGTH_LONG).show();
       return;
+      
+    } else if((hour == 0 && minutes <= 30)||(hour == 23 && minutes > 30)) {
+      Toast.makeText(context, "IRCTC Servers are down between 11:30PM "
+        + " - 12:30AM. Please try Later.", Toast.LENGTH_LONG).show();      
+      return;	
     }
-    
+
     progDailog = new ProgressDialog(this);
     progDailog.setMessage("Fetching your PNR status. Please wait..");
     progDailog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
