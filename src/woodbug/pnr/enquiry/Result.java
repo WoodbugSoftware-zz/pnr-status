@@ -26,6 +26,11 @@ public class Result {
 
   private ArrayList<Passenger> passengerList = new ArrayList<Passenger>();
   
+  public String getPassengerCurrentStatus() {
+    Passenger passenger = passengerList.get(0);
+    return passenger.status;
+  }
+  
   private class Passenger {
     private String
       seatNumber,
