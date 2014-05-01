@@ -71,12 +71,6 @@ public class PNREnquiryActivity extends Activity implements OnClickListener
   }
 
   @Override
-  protected void onDestroy() {
-    PNREnquiryApplication.dataSource.close();
-    super.onDestroy();
-  };
-
-  @Override
   protected void onPause() {
 	if(progDailog != null) progDailog.dismiss();
     super.onPause();
